@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+		<title></title>
+		<script src="./static/jquery-3.2.1/jquery-3.2.1.min.js"></script>
+		<script src="./static/jquery.form.js"></script>
+	</head>
+	<body>
+		<div>
+		<form id="form_reg">
+			<input name="act" style="display: none" value="reg"></input>
+			用户：<input type="text" name="user"><br>
+			密码：<input type="password" name="pass"><br>
+			<input type="submit" value="get上传">
+		</form>
+		</div>
+		<div>
+		<form id="form_login" method="post">
+			<input name="act" style="display: none" value="login"></input>
+			用户：<input type="text" name="user"><br>
+			密码：<input type="password" name="pass"><br>
+			<input type="submit" value="post上传">
+		</form>
+</div>
+		<script>
+			options = {
+				url:"/user",
+				type:"GET",
+				dataType:"json",
+				beforeSubmit:(formData,jqForm,options)=>{
+							console.log("aa");
+							console.log(formData);
+							console.log(jqForm);
+							console.log(options);
+							console.log("使用formData获得数据，列如 "+formData[0]["name"]+":"+formData[0]["value"]);
+							console.log("在这里做检验，检验失败返回false，成功返回true");
+							return true;
+				},
+				success:(data, textStatus, jqXHR)=>{
+					console.log("在这里通过data获得返回的数据");
+					console.log(data);
+				}
+			};
+
+			options2 = {
+				url:"/user",
+				type:"POST",
+				dataType:"json",
+				beforeSubmit:(formData,jqForm,options)=>{
+							console.log("aa");
+							console.log(formData);
+							console.log(jqForm);
+							console.log(options);
+							console.log("使用formData获得数据，列如 "+formData[0]["name"]+":"+formData[0]["value"]);
+							console.log("在这里做检验，检验失败返回false，成功返回true");
+							return true;
+				},
+				success:(data, textStatus, jqXHR)=>{
+					console.log("在这里通过data获得返回的数据");
+					console.log(data);
+					//返回false防止页面刷新
+					return false;
+				}
+			};
+
+			$(document).ready(function () {
+	        //将ajax请求和表单联系在一起
+	        $("#form_reg").ajaxForm(options);
+					$("#form_login").ajaxForm(options2);
+	    });
+
+
+		</script>
+	</body>
+</html>

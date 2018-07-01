@@ -1,0 +1,16 @@
+{
+  "name": "zzjtest123",
+  "version": "0.0.1",
+  "description": "我的测试的包zzj",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "zzj",
+    "测试",
+    "123"
+  ],
+  "author": "张中俊",
+  "license": "ISC"
+}
