@@ -117,7 +117,7 @@ exports.a=12;
 
 ```javascript
 module.exports={
-    
+
 };
 ```
 
@@ -126,7 +126,7 @@ module.exports={
 > 网址为https://www.npmjs.com/
 > 用户名：zhangzhongjun
 > 密码：/\*zhong\*/
-> 
+>
 
 =====
 
@@ -190,3 +190,135 @@ cd MyNpmTest_use_it
 npm update zzjtest123
 ```
 
+## express模块
+
+```javascript
+const express = require("express")
+
+// 1.创建服务
+var server = express();
+
+// 2. 处理请求
+// use 处理get或者post请求
+// get 处理get请求
+// post 处理post请求
+server.use('/a.html',(req,res)=>{
+  console.log("客户端访问了a");
+  res.send('<h1>处理get或者post请求</h1>');
+  res.end();
+});
+
+server.get('/b.html',(req,res)=>{
+  console.log("客户端访问了b");
+  res.send('<h1>处理get请求</h1>');
+  res.end();
+});
+
+server.post('/b.html',(req,res)=>{
+  res.send('<h1>处理post请求</h1>');
+  res.end();
+});
+
+// 3.监听
+server.listen(9999);
+```
+
+### express 中的链式操作
+
+```javascript
+server.use("/",function(req,res,next){
+  console.log("链式操作1");
+  req.a = 12;
+  next();
+});
+
+
+server.use("/",function(req,res,next){
+  console.log("链式操作2");
+  // 会从链中的上一个结点中继承下来req
+  console.log(req.a);
+});
+```
+
+## express  中间件
+
+###  express-static
+express 是一个插件型的框架，即允许其他的开发者为express开发插件
+express-static 就是一个处理静态资源的中间件
+
+```javascript
+// 1.创建服务
+var server = express();
+
+// 2.监听
+server.listen(9999);
+
+
+// 3.使用中间件处理静态文件
+server.use(expressStatic("./www"));
+```
+
+### cookie-parser
+
+cookie-parser是一个解析cookie的插件
+
+```javascript
+const cookieParser=require("cookie-parser");
+// 使用中间件 参数是解密密钥
+server.use(cookieParser("your screct"));
+server.use("/aaa/1.html",(req,res)=>{
+  // 这里指定加密密钥
+  req.secret="your secret";
+
+  // path是指只有aaa路径下才能使用我的cookie localhost:8989/aaa/index.html
+  // maxAge是指过期时间30*1000 ms
+  res.cookie('user','zhong',{path:"/aaa",maxAge:300*1000});
+  // singed表示要对cookie进行签名
+  res.cookie("age","12",{signed:true,maxAge:100*1000});
+
+  // 获得 无签名cookie
+  console.log(req.cookies);
+  // 获得 有签名cookie
+  console.log(req.signedCookies);
+
+  res.send("<h1>hello</h1>");
+});
+```
+
+### cookie-session
+
+cookie-session是用于操作session，该插件依赖于插件cookie-parser
+
+```javascript
+const cookieParser=require("cookie-parser");
+const cookieSession=require("cookie-session")
+server.use(cookieParser());
+
+server.use(cookieSession({
+  // 密钥池
+  keys:["your secret1","your secret2","your secret3"],
+  // 指定session的有效期 20*1000 ms
+  maxAge:20*1000
+}))
+
+server.use("/",(req,res)=>{
+  if(req.session['count']==null){
+    req.session['count']=1;
+  }else{
+    req.session['count']++;
+  }
+
+  console.log(req.session['count']);
+  res.send("ok")
+})
+```
+
+
+### 写一个自己的中间件
+
+我现在想写一个自己bodyparse中间件
+
+libs/my-body-parser.js
+7.express使用自定义的中间件.js
+
+![express的中间件](imgs/express的中间件.png)
